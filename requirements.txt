@@ -1,0 +1,7 @@
+Flask
+scikit-learn
+joblib
+tldextract
+python-whois
+numpy
+requests
