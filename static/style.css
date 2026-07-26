@@ -1,0 +1,316 @@
+/* Active Navigation Link Indicator */
+.nav-links a.active-link {
+    color: var(--primary) !important;
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 2px;
+}
+
+/* --- Root Variables & Base Styling --- */
+:root {
+    --bg-dark: #07090f;
+    --bg-darker: #020306;
+    --primary: #38bdf8; /* Cyben Blue */
+    --primary-glow: #0284c7;
+    --accent: #1e293b;
+    --text-white: #f8fafc;
+    --text-muted: #94a3b8;
+    --glass-bg: rgba(22, 28, 45, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --font-family: 'Plus Jakarta Sans', sans-serif;
+    
+    --safe: #10b981;
+    --suspicious: #f59e0b;
+    --phishing: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
+    scroll-behavior: smooth; /* Modern long-scroll effect */
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* --- Animated Mesh Background --- */
+.mesh-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(2, 132, 199, 0.1) 0%, transparent 40%);
+    opacity: 0.7;
+    z-index: -1;
+    filter: blur(80px);
+}
+
+/* --- Layout Structure --- */
+.dashboard-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 100px; /* Offset for top navbar */
+}
+
+.dashboard-section {
+    padding: 60px 0;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.section-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--text-white) 50%, var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    margin-bottom: 12px;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-white);
+    margin-bottom: 8px;
+}
+
+.section-header p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* --- Glassmorphism Card Style --- */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card:hover {
+    border-color: rgba(56, 189, 248, 0.2);
+    transform: translateY(-2px);
+}
+
+/* --- Navbar Styling --- */
+.glass-navbar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 900px;
+    width: 90%;
+    background: rgba(22, 28, 45, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.glass-navbar .logo {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--primary);
+}
+
+.glass-navbar span { color: var(--text-white); font-weight: 400; font-size: 0.9rem; margin-left: 5px;}
+
+.nav-links { display: flex; gap: 20px; }
+.nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--primary); }
+
+/* --- Overview Section - Scan Card --- */
+.main-scan-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.input-group {
+    display: flex;
+    gap: 15px;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 18px 22px;
+    border-radius: 12px;
+    border: 1px solid var(--accent);
+    background: #0d1221;
+    color: var(--text-white);
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+button {
+    padding: 18px 30px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Status Summary Box */
+#quick-result { margin-top: 30px; border-top: 1px solid var(--accent); padding-top: 25px; text-align: center; }
+.status-summary { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+#quick-status { font-weight: 800; font-size: 1.6rem; margin-bottom: 5px; }
+
+/* Badges */
+.badge { display: inline-block; padding: 8px 18px; border-radius: 30px; font-weight: 800; font-size: 0.85rem; }
+.badge.safe { background-color: rgba(16, 185, 129, 0.15); color: var(--safe); }
+.badge.suspicious { background-color: rgba(245, 158, 11, 0.15); color: var(--suspicious); }
+.badge.phishing { background-color: rgba(239, 68, 68, 0.15); color: var(--phishing); }
+
+/* --- Global Loader Module --- */
+#global-loader { text-align: center; margin-top: 30px; }
+.spinner { width: 50px; height: 50px; border: 5px solid var(--accent); border-top: 5px solid var(--primary); border-radius: 50%; margin: 0 auto 20px; animation: spin 1.2s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+#loader-step { color: var(--primary); font-style: italic; font-size: 0.9rem; }
+
+/* --- Initial State Hero --- */
+#initial-state { margin-top: 60px; text-align: center; color: rgba(255, 255, 255, 0.15); }
+.hero-graphic { font-size: 6rem; margin-bottom: 20px; }
+
+/* --- Advanced Threats - Report Grid --- */
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.span-2-rows { grid-row: span 2; }
+
+/* Risk Score Chart Card */
+.chart-card h3 { text-align: center; margin-bottom: 8px; }
+.chart-card p { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; }
+
+.chart-container {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.chart-value {
+    position: absolute;
+    top: 55%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#risk-percent { font-weight: 800; font-size: 2.8rem; color: var(--text-white); }
+#risk-desc { display: block; font-size: 0.8rem; color: var(--text-muted); font-weight: 700; margin-top: -5px; }
+
+/* Threat Signals List */
+.threat-signals h3, .risk-callout h3 { margin-bottom: 20px; font-size: 1.1rem; border-bottom: 1px solid var(--accent); padding-bottom: 10px; }
+.signals-list { list-style: none; display: flex; flex-direction: column; gap: 15px; font-size: 0.95rem; color: var(--text-white); }
+.signals-list li { display: flex; justify-content: space-between; align-items: center; }
+.signals-list li .icon { font-size: 1.1rem; margin-right: 8px; width: 20px; text-align: center; }
+.signal-status { font-weight: 700; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
+.unverified { color: #525252; }
+.safe-status { color: var(--safe); }
+.warn-status { color: var(--suspicious); }
+.crit-status { color: var(--phishing); }
+
+/* Risk Callout List */
+.risk-callout .list-callout { font-size: 0.9rem; line-height: 1.6; }
+.risk-callout .list-callout ul { list-style-type: none; padding-left: 5px;}
+.risk-callout .list-callout li { display: flex; gap: 10px; color: var(--phishing); margin-bottom: 8px;}
+.risk-callout .list-callout strong { color: var(--phishing); }
+.empty { color: var(--text-muted) !important; font-style: italic; }
+
+/* --- Technical Feature Breakdown Grid --- */
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.span-whole-row { grid-column: span 2; }
+
+.feature-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 18px; color: var(--text-white); padding-bottom: 10px; border-bottom: 1px solid var(--accent); }
+.card-icon { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 12px; }
+
+.feature-card ul { list-style: none; font-size: 0.95rem; }
+.feature-card li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-muted); }
+.feature-card strong { color: var(--text-white); font-weight: 600; }
+
+.summary-card p { font-size: 1rem; color: var(--text-muted); line-height: 1.8; max-width: 900px; margin: 0 auto;}
+
+/* General Visibility Utility */
+.hidden { display: none !important; }
+
+/* Glowing Neon Border Effects */
+.glass-card {
+    position: relative;
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    background: rgba(13, 18, 33, 0.75);
+    backdrop-filter: blur(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-card:hover {
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-4px);
+}
+
+/* Pulsing Security Status Badge Animation */
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.badge.phishing {
+    animation: pulseGlow 2s infinite;
+}

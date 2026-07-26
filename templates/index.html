@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldAI Engine v3.0 - Hybrid Phishing URL Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    
+    <!-- Background Gradient and Mesh Effects -->
+    <div class="mesh-bg"></div>
+
+    <div class="dashboard-wrapper">
+        
+        <!-- Navigation/Header Bar -->
+        <nav class="glass-navbar">
+            <div class="logo">🛡️ ShieldAI <span>Intel</span></div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="active-link">Scanner</a>
+                <a href="{{ url_for('analytics') }}">Analytics</a>
+                <a href="{{ url_for('batch_scan') }}">Batch Inspector</a>
+                <a href="{{ url_for('docs') }}">API & Docs</a>
+            </div>
+        </nav>
+
+        <!-- 1. Overview Section -->
+        <section id="overview" class="dashboard-section section-active">
+            <header class="section-header">
+                <h1>Hybrid URL Phishing Intelligence Engine</h1>
+                <p>Advanced security protocol analysis using heuristic algorithms, domain reputation intelligence, and machine learning models.</p>
+            </header>
+
+            <!-- Input and Quick Scan Module -->
+            <div class="glass-card main-scan-card">
+                <form id="scan-form">
+                    <div class="input-group">
+                        <input type="text" id="url-input" placeholder="Enter suspect URL, e.g., security.verify-update.com" required autocomplete="off">
+                        <button type="submit" id="scan-btn">Initiate Deep Scan</button>
+                    </div>
+                </form>
+
+                <div id="quick-result" class="hidden">
+                    <div class="status-summary">
+                        <span id="threat-badge" class="badge">ANALYZING...</span>
+                        <h2 id="quick-status">Scanning URL Security Profile...</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loader Module (Displays during API wait) -->
+            <div id="global-loader" class="glass-card hidden">
+                <div class="loader-content">
+                    <div class="spinner"></div>
+                    <h3>Performing Multi-Layer Analysis...</h3>
+                    <p id="loader-step">Querying Live WHOIS Registries, Parsing Subdomain Heuristics, Invoking AI Probability Inference.</p>
+                </div>
+            </div>
+
+            <!-- Initial State Info -->
+            <div id="initial-state" class="center-content">
+                <div class="hero-graphic">🔍</div>
+                <h3>System Ready</h3>
+                <p>Input a target URL above to begin real-time security verification.</p>
+            </div>
+        </section>
+
+        <!-- 2. Advanced Threat Analysis Report (HIDDEN UNTIL SCAN) -->
+        <section id="advanced-threats" class="dashboard-section hidden">
+            <div class="section-header">
+                <h2>Advanced Threat Analysis Report</h2>
+                <p>Breakdown of key risk vector probability scoring based on hybrid engine analysis.</p>
+            </div>
+
+            <div class="report-grid">
+                
+                <!-- Main Risk Score Radial Chart -->
+                <div class="glass-card chart-card span-2-rows">
+                    <h3>Overall Phishing Risk Score</h3>
+                    <p>Composite score derived from ML model probability, domain age data, and lexical heuristics.</p>
+                    <div class="chart-container">
+                        <canvas id="riskScoreChart"></canvas>
+                        <div class="chart-value">
+                            <span id="risk-percent">--%</span>
+                            <span id="risk-desc">CALCULATING</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threat Intelligence Signals Grid -->
+                <div class="threat-signals glass-card">
+                    <h3>Threat Intelligence Signals</h3>
+                    <ul class="signals-list">
+                        <li>
+                            <span class="icon">✅</span> 
+                            Trusted Domain Whitelist
+                            <span id="signal-trusted" class="signal-status unverified">Unverified</span>
+                        </li>
+                        <li>
+                            <span class="icon">🌐</span> 
+                            Live WHOIS Record Found
+                            <span id="signal-whois" class="signal-status unverified">Unverified</span>
+                        </li>
+                        <li>
+                            <span class="icon">🔒</span> 
+                            HTTPS Encrypted Connection
+                            <span id="signal-https" class="signal-status unverified">Unverified</span>
+                        </li>
+                        <li>
+                            <span class="icon">💻</span> 
+                            Lexical Features Check
+                            <span id="signal-lexical" class="signal-status unverified">Unverified</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Critical Risk Indicators Callout -->
+                <div class="risk-callout glass-card">
+                    <h3>Critical Risk Indicators Detected</h3>
+                    <div id="critical-list" class="list-callout empty">None detected.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Technical Feature Breakdown (HIDDEN UNTIL SCAN) -->
+        <section id="feature-breakdown" class="dashboard-section hidden">
+            <div class="section-header">
+                <h2>Technical Feature Breakdown & System Specs</h2>
+                <p>Specific data points parsed by the engine for advanced threat vector intelligence.</p>
+            </div>
+
+            <div class="tech-grid">
+                
+                <!-- Heuristic Signals -->
+                <div class="glass-card feature-card">
+                    <div class="card-icon">⚡ Heuristics</div>
+                    <h3>Key Lexical Indicators</h3>
+                    <ul>
+                        <li>URL Length: <strong id="feat-url-len">-</strong></li>
+                        <li>Dots in Domain: <strong id="feat-dots">-</strong></li>
+                        <li>Has Hyphens: <strong id="feat-hyphens">-</strong></li>
+                        <li>Contains IP Address Host: <strong id="feat-ip">-</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Domain Reputational Info -->
+                <div class="glass-card feature-card">
+                    <div class="card-icon">🏢 Reputation</div>
+                    <h3>Domain Reputation Intelligence</h3>
+                    <ul>
+                        <li>Root Domain: <strong id="feat-domain">-</strong></li>
+                        <li>Domain Registration Age: <strong id="feat-age">-</strong></li>
+                        <li>Brand Impersonation Keywords: <strong id="feat-keywords">-</strong></li>
+                        <li>Deceptive Subdomain: <strong id="feat-subdomain">-</strong></li>
+                    </ul>
+                </div>
+
+                <!-- System Summary -->
+                <div class="glass-card feature-card span-whole-row summary-card">
+                    <div class="card-icon">🤖 AI Engine Conclusion</div>
+                    <h3>Summary & Recommendation</h3>
+                    <p id="analysis-summary">The AI Engine analysis conclusion will be displayed here after a successful scan.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldAI Intel - Bulk Batch URL Inspector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="mesh-bg"></div>
+
+    <div class="dashboard-wrapper">
+        <!-- Global Navbar -->
+        <nav class="glass-navbar">
+            <div class="logo">🛡️ ShieldAI <span>Intel</span></div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Scanner</a>
+                <a href="{{ url_for('analytics') }}">Analytics</a>
+                <a href="{{ url_for('batch_scan') }}" class="active-link">Batch Inspector</a>
+                <a href="{{ url_for('docs') }}">API & Docs</a>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <header class="section-header">
+            <h1>Bulk URL Batch Inspector</h1>
+            <p>Analyze up to 10 URLs simultaneously. The batch engine executes real-time heuristic parsing and AI probability scoring per entry.</p>
+        </header>
+
+        <!-- Input Glass Card -->
+        <div class="glass-card main-scan-card" style="max-width: 900px; margin-bottom: 40px;">
+            <form id="batch-form">
+                <label for="batch-urls" style="display: block; margin-bottom: 12px; font-weight: 600; color: #94a3b8;">
+                    Enter target URLs (one URL per line):
+                </label>
+                <textarea id="batch-urls" rows="6" placeholder="https://google.com&#10;http://paypal-secure-update-login.com&#10;https://github.com/trending" required style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #1e293b; background: #0d1221; color: #f8fafc; font-family: monospace; font-size: 0.95rem; resize: vertical; outline: none; margin-bottom: 20px;"></textarea>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span id="batch-count" style="font-size: 0.85rem; color: #94a3b8;">Ready to process targets</span>
+                    <button type="submit" id="batch-btn">Execute Batch Analysis</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Progress Loader -->
+        <div id="batch-loader" class="glass-card hidden" style="text-align: center; margin-bottom: 30px;">
+            <div class="spinner"></div>
+            <h3>Processing Batch Requests...</h3>
+            <p id="batch-progress-text" style="color: #38bdf8; margin-top: 5px;">Analyzing URL 1 of N...</p>
+        </div>
+
+        <!-- Results Table Card -->
+        <div id="batch-results-card" class="glass-card hidden" style="max-width: 1000px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <h3>Batch Inspection Results</h3>
+                <button id="download-json-btn" style="padding: 10px 18px; font-size: 0.85rem; background: #1e293b; border: 1px solid #38bdf8;">Export Report (JSON)</button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #38bdf8;">
+                            <th style="padding: 12px;">#</th>
+                            <th style="padding: 12px;">Target URL</th>
+                            <th style="padding: 12px;">Domain</th>
+                            <th style="padding: 12px;">Risk Score</th>
+                            <th style="padding: 12px;">Verdict</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batch-table-body">
+                        <!-- Populated dynamically by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Handling Batch API Processing -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const batchForm = document.getElementById('batch-form');
+            const batchUrlsInput = document.getElementById('batch-urls');
+            const batchLoader = document.getElementById('batch-loader');
+            const batchResultsCard = document.getElementById('batch-results-card');
+            const batchTableBody = document.getElementById('batch-table-body');
+            const batchProgressText = document.getElementById('batch-progress-text');
+            const downloadBtn = document.getElementById('download-json-btn');
+
+            let lastBatchData = [];
+
+            batchForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const lines = batchUrlsInput.value.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
+
+                if (lines.length === 0) {
+                    alert("Please enter at least one URL.");
+                    return;
+                }
+
+                if (lines.length > 10) {
+                    alert("Batch limit reached. Please enter a maximum of 10 URLs at a time.");
+                    return;
+                }
+
+                // Reset UI state
+                batchLoader.classList.remove('hidden');
+                batchResultsCard.classList.add('hidden');
+                batchTableBody.innerHTML = '';
+                lastBatchData = [];
+
+                // Sequential Batch Processing via API
+                for (let i = 0; i < lines.length; i++) {
+                    const targetUrl = lines[i];
+                    batchProgressText.innerText = `Analyzing URL ${i + 1} of ${lines.length}: ${targetUrl.substring(0, 30)}...`;
+
+                    try {
+                        const response = await fetch('/api/scan', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ url: targetUrl })
+                        });
+
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            lastBatchData.push(data);
+                        } else {
+                            lastBatchData.push({ url: targetUrl, domain: "N/A", risk_score: 0, status: "Error", risk_level: "ERROR" });
+                        }
+                    } catch (err) {
+                        lastBatchData.push({ url: targetUrl, domain: "N/A", risk_score: 0, status: "Failed", risk_level: "ERROR" });
+                    }
+                }
+
+                // Render Table Results
+                batchLoader.classList.add('hidden');
+                populateBatchTable(lastBatchData);
+                batchResultsCard.classList.remove('hidden');
+            });
+
+            function populateBatchTable(dataList) {
+                batchTableBody.innerHTML = '';
+                dataList.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+
+                    let statusColor = '#10b981'; // Green
+                    if (item.status === 'Suspicious') statusColor = '#f59e0b'; // Yellow
+                    if (item.status === 'Phishing' || item.status === 'Error') statusColor = '#ef4444'; // Red
+
+                    tr.innerHTML = `
+                        <td style="padding: 12px; color: #94a3b8;">${index + 1}</td>
+                        <td style="padding: 12px; color: #f8fafc; font-family: monospace; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.url}</td>
+                        <td style="padding: 12px; color: #94a3b8;">${item.domain || 'N/A'}</td>
+                        <td style="padding: 12px; font-weight: bold; color: ${statusColor};">${item.risk_score !== undefined ? item.risk_score + '%' : 'N/A'}</td>
+                        <td style="padding: 12px;"><span class="badge" style="background: ${statusColor}22; color: ${statusColor};">${(item.status || 'UNKNOWN').toUpperCase()}</span></td>
+                    `;
+                    batchTableBody.appendChild(tr);
+                });
+            }
+
+            // Export Batch Results as JSON
+            downloadBtn.addEventListener('click', function() {
+                if (lastBatchData.length === 0) return;
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lastBatchData, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `ShieldAI_Batch_Report_${Date.now()}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+            });
+        });
+    </script>
+</body>
+</html>

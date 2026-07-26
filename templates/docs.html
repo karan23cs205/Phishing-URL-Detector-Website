@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldAI Intel - Interactive API Documentation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="mesh-bg"></div>
+
+    <div class="dashboard-wrapper">
+        <!-- Global Navbar -->
+        <nav class="glass-navbar">
+            <div class="logo">🛡️ ShieldAI <span>Intel</span></div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Scanner</a>
+                <a href="{{ url_for('analytics') }}">Analytics</a>
+                <a href="{{ url_for('batch_scan') }}">Batch Inspector</a>
+                <a href="{{ url_for('docs') }}" class="active-link">API & Docs</a>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="section-header">
+            <h1>Interactive API Playground</h1>
+            <p>Test live endpoints, copy integration code snippets, and inspect the 3-layer threat verification pipeline.</p>
+        </header>
+
+        <!-- Interactive Live Endpoint Playground -->
+        <div class="glass-card" style="margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="badge safe" style="padding: 6px 14px; font-size: 0.8rem; background: rgba(16,185,129,0.2); color: #10b981;">POST</span>
+                    <code style="font-size: 1.2rem; color: #38bdf8; font-family: monospace;">/api/scan</code>
+                </div>
+                <span style="font-size: 0.85rem; color: #10b981; font-weight: 600;">● Live Endpoint Active</span>
+            </div>
+
+            <div class="tech-grid" style="gap: 20px;">
+                <!-- Request Input Tester -->
+                <div>
+                    <h4 style="margin-bottom: 10px; color: #f8fafc;">Request Payload Editor</h4>
+                    <label style="font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 8px;">Target URL Parameter:</label>
+                    <input type="text" id="api-test-url" value="https://paypal-security-update-verify.com" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; background: #0d1221; color: #38bdf8; font-family: monospace; font-size: 0.9rem; margin-bottom: 15px;">
+                    
+                    <button id="send-api-btn" style="width: 100%; padding: 12px; font-size: 0.9rem;">▶ Execute API Call</button>
+                </div>
+
+                <!-- Live Response Output Window -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: #f8fafc;">Live Response Output</h4>
+                        <span id="response-status" style="font-size: 0.8rem; font-family: monospace; color: #94a3b8;">Status: Ready</span>
+                    </div>
+                    <pre id="json-response-display" style="background: #0d1221; padding: 15px; border-radius: 10px; border: 1px solid #1e293b; color: #10b981; font-size: 0.82rem; font-family: monospace; max-height: 220px; overflow-y: auto;">// Response output will render here upon request execution...</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Architecture Card -->
+        <div class="glass-card" style="margin-bottom: 30px;">
+            <h3>Detection Pipeline Architecture</h3>
+            <p style="color: #94a3b8; font-size: 0.88rem; margin-top: 5px; margin-bottom: 20px;">
+                Requests pass through 3 sequential security layers before returning final probability metrics.
+            </p>
+
+            <div class="tech-grid" style="grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div style="background: rgba(255,255,255,0.02); padding: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+                    <div style="color: #38bdf8; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px;">LAYER 1</div>
+                    <h4 style="margin: 8px 0; font-size: 1.05rem;">Authority Whitelist</h4>
+                    <p style="color: #94a3b8; font-size: 0.82rem; line-height: 1.5;">Domain isolation bypasses false positives on top-level verified search and enterprise sites.</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.02); padding: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+                    <div style="color: #38bdf8; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px;">LAYER 2</div>
+                    <h4 style="margin: 8px 0; font-size: 1.05rem;">WHOIS & Heuristics</h4>
+                    <p style="color: #94a3b8; font-size: 0.82rem; line-height: 1.5;">Queries registration age, SSL certificate status, and brand spoofing signals in subdomains.</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.02); padding: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+                    <div style="color: #38bdf8; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px;">LAYER 3</div>
+                    <h4 style="margin: 8px 0; font-size: 1.05rem;">Random Forest Model</h4>
+                    <p style="color: #94a3b8; font-size: 0.82rem; line-height: 1.5;">Evaluates lexical vector embeddings to compute risk score confidence metrics.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabbed Code Snippet Integration Examples -->
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Code Snippets</h3>
+                <!-- Code Language Tabs -->
+                <div style="display: flex; gap: 8px;">
+                    <button class="code-tab active-tab" data-lang="python" style="padding: 6px 14px; font-size: 0.8rem; background: #38bdf8; border: none;">Python</button>
+                    <button class="code-tab" data-lang="js" style="padding: 6px 14px; font-size: 0.8rem; background: #1e293b; border: none;">JavaScript</button>
+                    <button class="code-tab" data-lang="curl" style="padding: 6px 14px; font-size: 0.8rem; background: #1e293b; border: none;">cURL</button>
+                </div>
+            </div>
+
+            <!-- Snippet Displays -->
+            <div style="position: relative;">
+                <button id="copy-snippet-btn" style="position: absolute; top: 12px; right: 12px; padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">Copy Code</button>
+                
+                <pre id="code-box-python" class="snippet-box" style="background: #0d1221; padding: 20px; border-radius: 10px; border: 1px solid #1e293b; color: #f8fafc; font-size: 0.85rem; font-family: monospace; overflow-x: auto;">import requests
+
+url = "http://127.0.0.1:5000/api/scan"
+payload = {"url": "https://paypal-security-update-verify.com"}
+
+response = requests.post(url, json=payload)
+print(response.json())</pre>
+
+                <pre id="code-box-js" class="snippet-box hidden" style="background: #0d1221; padding: 20px; border-radius: 10px; border: 1px solid #1e293b; color: #f8fafc; font-size: 0.85rem; font-family: monospace; overflow-x: auto;">fetch("http://127.0.0.1:5000/api/scan", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ url: "https://paypal-security-update-verify.com" })
+})
+.then(res => res.json())
+.then(data => console.log(data));</pre>
+
+                <pre id="code-box-curl" class="snippet-box hidden" style="background: #0d1221; padding: 20px; border-radius: 10px; border: 1px solid #1e293b; color: #f8fafc; font-size: 0.85rem; font-family: monospace; overflow-x: auto;">curl -X POST http://127.0.0.1:5000/api/scan \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://paypal-security-update-verify.com"}'</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Docs JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sendBtn = document.getElementById('send-api-btn');
+            const apiInput = document.getElementById('api-test-url');
+            const jsonDisplay = document.getElementById('json-response-display');
+            const statusDisplay = document.getElementById('response-status');
+
+            // 1. Live API Playground Execution
+            sendBtn.addEventListener('click', async function() {
+                const url = apiInput.value.trim();
+                if(!url) return;
+
+                jsonDisplay.innerText = "// Sending request...";
+                statusDisplay.innerText = "Status: Pending...";
+                statusDisplay.style.color = "#f59e0b";
+
+                try {
+                    const res = await fetch('/api/scan', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: url })
+                    });
+
+                    const data = await res.json();
+                    statusDisplay.innerText = `Status: ${res.status} OK`;
+                    statusDisplay.style.color = "#10b981";
+                    jsonDisplay.innerText = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    statusDisplay.innerText = "Status: Error";
+                    statusDisplay.style.color = "#ef4444";
+                    jsonDisplay.innerText = `// Error executing request: ${err.message}`;
+                }
+            });
+
+            // 2. Tab Switcher
+            const tabs = document.querySelectorAll('.code-tab');
+            const snippetBoxes = document.querySelectorAll('.snippet-box');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const selectedLang = this.getAttribute('data-lang');
+
+                    tabs.forEach(t => {
+                        t.style.background = '#1e293b';
+                        t.classList.remove('active-tab');
+                    });
+                    this.style.background = '#38bdf8';
+                    this.classList.add('active-tab');
+
+                    snippetBoxes.forEach(box => box.classList.add('hidden'));
+                    document.getElementById(`code-box-${selectedLang}`).classList.remove('hidden');
+                });
+            });
+
+            // 3. Copy Code Button
+            const copyBtn = document.getElementById('copy-snippet-btn');
+            copyBtn.addEventListener('click', function() {
+                const activeBox = document.querySelector('.snippet-box:not(.hidden)');
+                navigator.clipboard.writeText(activeBox.innerText);
+                copyBtn.innerText = "Copied!";
+                setTimeout(() => copyBtn.innerText = "Copy Code", 2000);
+            });
+        });
+    </script>
+</body>
+</html>
