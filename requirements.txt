@@ -5,3 +5,4 @@ tldextract
 python-whois
 numpy
 requests
+gunicorn
